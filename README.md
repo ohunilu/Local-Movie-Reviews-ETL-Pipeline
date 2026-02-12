@@ -1,18 +1,23 @@
 # Local Movie Reviews ETL Pipeline
 
-This project demonstrates how real-world data systems ingest, process, and store streaming data.
+This project is part of my public data engineering portfolio.
 
-It simulates movie review events, streams them through Kafka, processes them with Apache Airflow, and stores structured results in PostgreSQL — all running locally with Docker.
+As someone transitioning from Accounting into Data Engineering, I wanted to deeply understand how modern systems move from raw events to structured, decision-ready data. This project simulates that real-world flow using a fully containerized, reproducible environment.
 
-## Why This Matters
+At a high level, the system generates movie review events, streams them through Kafka, orchestrates processing with Apache Airflow, and stores structured results in PostgreSQL — all running locally with Docker Compose.
 
-Modern businesses rely on automated data pipelines to turn raw events into structured insights.  
-This project demonstrates the foundational building blocks behind systems used in production environments such as:
+## What This Project Demonstrates (In Simple Terms)
 
-- Log processing systems
-- Real-time analytics platforms
-- Event-driven architectures
-- Data warehousing pipelines
+Modern companies constantly collect events (transactions, clicks, logs, ratings) and transform them into structured datasets for reporting and analytics.
+
+This project simulates that process:
+
+- Movie reviews are generated as live events
+- Events are streamed reliably through a message broker
+- A scheduled workflow processes and aggregates the data
+- Clean, structured results are stored in a database
+
+The goal is to demonstrate how raw event data becomes usable business insight.
 
 ## Project Scope
 
@@ -38,6 +43,8 @@ This pipeline demonstrates the classic **producer → message broker → orchest
    - Inserts raw reviews into PostgreSQL
    - Computes aggregates (avg rating + count per movie) into a stats table
 4. **PostgreSQL** (16) serves as the data warehouse with `reviews` and `daily_stats` tables
+
+This architecture mirrors foundational patterns used in production data platforms.
 
 ### Data Flow
 
@@ -280,3 +287,16 @@ Built as a learning project to demonstrate:
 - Workflow orchestration with Airflow
 - Data warehousing patterns
 - Docker containerization best practices
+
+## About the Author
+
+Built by **Idris Busari** — a Business Data Transformation Consultant specializing in designing data systems that convert raw operational data into structured, decision-ready insights.
+
+My transition into data engineering is driven by a deep interest in how raw operational data becomes structured insight. I focus on building reproducible, well-architected data systems that reflect real-world production patterns.
+
+I believe strong data engineering begins with mastering fundamentals — event-driven design, workflow orchestration, data modeling, and reproducible environments.
+
+Connect with me:
+
+- LinkedIn: https://www.linkedin.com/in/idris-busari-ohunilu
+- X: https://x.com/ohunilu
