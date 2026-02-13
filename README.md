@@ -1,5 +1,7 @@
 # Local Movie Reviews ETL Pipeline
 
+![Architecture Diagram](architecture.png)
+
 This project is part of my public data engineering portfolio.
 
 As someone transitioning from Accounting into Data Engineering, I wanted to deeply understand how modern systems move from raw events to structured, decision-ready data. This project simulates that real-world flow using a fully containerized, reproducible environment.
