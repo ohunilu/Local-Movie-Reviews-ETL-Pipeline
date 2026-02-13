@@ -97,7 +97,7 @@ git clone https://github.com/yourusername/Local-Movie-Reviews-ETL-Pipeline.git
 cd Local-Movie-Reviews-ETL-Pipeline
 ```
 
-### 2. Start the Environment
+### 2. Start the Environment and the Pipeline
 
 ```bash
 docker compose up -d
@@ -112,8 +112,9 @@ This single command will:
 - Create the `postgres_default` Airflow connection automatically
 - Start Airflow webserver and scheduler
 - Produce 50 sample movie reviews to Kafka
+- Airflow Ingest the Data into Posgres
 
-**Wait ~30 seconds** for all services to become healthy.
+**Wait ~60 seconds** for all services to become healthy and completed.
 
 ### 3. Access Airflow UI
 
@@ -122,12 +123,13 @@ Open your browser to: **http://localhost:8080**
 - **Username**: `admin`
 - **Password**: `admin`
 
-### 4. Trigger the ETL Pipeline
+### 4. Confirm DAG was Triggered
 
 1. In the Airflow UI, find the DAG: `movie_reviews_etl`
 2. Toggle it **ON** (if not already enabled)
-3. Click the **▶ Trigger DAG** button
-4. Monitor the execution in the **Graph** or **Grid** view
+3. Click on `movie_reviews_etl` DAG to open it
+4. Click on the **Graph View** to see the DAG flow
+5. You should see 3 green tasks.
 
 ### 5. Verify Results
 
@@ -218,7 +220,8 @@ The environment will:
 - Set up permissions automatically
 - Initialize the database
 - Create Airflow connections
-- Be ready to use in ~30 seconds
+- Be ready to use in ~60 seconds
+- Automatically trigger the DAG
 
 ## DAG Details
 

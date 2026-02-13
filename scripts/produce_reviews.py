@@ -6,7 +6,7 @@ import random
 producer = KafkaProducer(bootstrap_servers='kafka:9092',
                          value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-movies = ["Inception", "Dune", "Oppenheimer", "Barbie"]
+movies = ["Anikulapo", "The Wedding Party", "King of Boys", "Ayinla", "Jagun Jagun", "Swallow","The Bling Lagosians","The Black Book","Blood Sisters","The Set Up"]
 for i in range(50):
     review = {
         "movie": random.choice(movies),

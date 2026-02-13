@@ -60,8 +60,8 @@ services:
 
   airflow-common: &airflow-common
     build:
-      context: .               # current directory (where Dockerfile is)
-      dockerfile: Dockerfile   # your custom Dockerfile name
+      context: .               # current directory
+      dockerfile: Dockerfile   # custom Dockerfile
     user: "50000:0"
     environment:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow_db
@@ -83,13 +83,8 @@ services:
     <<: *airflow-common
     command: >
       bash -c "airflow db init && airflow db migrate && airflow db upgrade &&
-               airflow connections add 'postgres_default' 
-                 --conn-type 'postgres' 
-                 --conn-host 'postgres' 
-                 --conn-schema 'airflow_db' 
-                 --conn-login 'airflow' 
-                 --conn-password 'airflow' 
-                 --conn-port '5432' || true"
+               airflow connections delete 'postgres_default' || true &&
+               airflow connections add 'postgres_default' --conn-type 'postgres' --conn-host 'postgres' --conn-schema 'airflow_db' --conn-login 'airflow' --conn-password 'airflow' --conn-port '5432'"
 
   airflow-webserver:
     <<: *airflow-common
@@ -100,7 +95,8 @@ services:
       - ./dags:/opt/airflow/dags:ro
       - ./logs:/opt/airflow/logs
     depends_on:
-      - airflow-init
+      airflow-init:
+        condition: service_completed_successfully
 
   airflow-scheduler:
     <<: *airflow-common
@@ -122,6 +118,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      airflow-webserver:
+        condition: service_started
 
 volumes:
   kafka-data:
