@@ -1,15 +1,13 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator 
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import json
 from kafka import KafkaConsumer
 
 def consume_and_insert(**context):
-    from kafka import KafkaConsumer
-    import json
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
-
+    
     consumer = KafkaConsumer(
         'movie-reviews',
         bootstrap_servers='kafka:9092',
