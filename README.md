@@ -2,9 +2,9 @@
 
 ![Architecture Diagram](architecture.png)
 
-This project is part of my public data engineering portfolio.
+This project is part of my public data engineering portfolio running on local machine.
 
-To have a deep understanding of Data Engineering tools and concepts, I decided to build simple projects like this one to simulate real-world data engineering flow using a fully containerized, reproducible environment. I intentionally kept the scope small and containerized to focus on the core concepts of using the tools (Apache Kafka, Apache Airflow, PostgreSQL) in a data engineering pipeline rather than battling with infrastructure setup.
+Although I have Cloud Engineering skills, I wanted to have a deep understanding of Data Engineering tools and concepts locally before replicating in the cloud. I decided to build simple projects like this one to simulate real-world data engineering flow using a fully containerized, reproducible environment. I intentionally kept the scope small and containerized to focus on the core concepts of using the tools (Apache Kafka, Apache Airflow, PostgreSQL) in a data engineering pipeline rather than battling with infrastructure setup.
 
 At a high level, the system generates movie review events, streams them through Kafka, orchestrates processing with Apache Airflow(which is intentionally used as a consumer), and stores structured results in PostgreSQL — all running locally with Docker Compose.
 
@@ -39,22 +39,6 @@ This pipeline demonstrates the classic **producer → message broker → orchest
    - Inserts raw reviews into PostgreSQL
    - Computes aggregates (avg rating + count per movie) into a stats table
 4. **PostgreSQL** (16) serves as the data warehouse with `reviews` and `daily_stats` tables
-
-### Data Flow
-
-```
-[Python Producer]
-    ↓ (publishes)
-[Kafka: movie-reviews topic]
-    ↓ (Airflow DAG reads)
-[Airflow ETL Pipeline]
-├─ Create Tables
-├─ Consume & Insert Reviews
-└─ Compute Aggregates
-    ↓ (writes to)
-[PostgreSQL Database]
-└─ reviews, daily_stats tables
-```
 
 ## Features
 

@@ -4,6 +4,7 @@ from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import json
+import os
 from kafka import KafkaConsumer
 
 def consume_and_insert(**context):
@@ -20,16 +21,18 @@ def consume_and_insert(**context):
     )
 
     postgres_hook = PostgresHook(postgres_conn_id='postgres_default')
+    
+    # Load SQL from external file
+    dag_dir = os.path.dirname(os.path.abspath(__file__))
+    sql_path = os.path.join(dag_dir, 'sql', 'insert_review.sql')
+    with open(sql_path, 'r') as f:
+        insert_sql = f.read()
 
     inserted = 0
     try:
         for message in consumer:
             review = message.value
-            postgres_hook.run("""
-                INSERT INTO reviews (movie, rating, review_text, review_time)
-                VALUES (%s, %s, %s, to_timestamp(%s))
-                ON CONFLICT DO NOTHING  -- optional idempotency
-            """, parameters=(
+            postgres_hook.run(insert_sql, parameters=(
                 review['movie'],
                 review['rating'],
                 review['text'],
@@ -49,21 +52,14 @@ with DAG(
     start_date=datetime(2025, 1, 1),
     schedule='@hourly',
     catchup=False,
-    max_active_runs=1
+    max_active_runs=1,
+    template_searchpath=[os.path.dirname(os.path.abspath(__file__)) + '/sql']
 ) as dag:
 
     create_table = SQLExecuteQueryOperator(
         task_id='create_table',
         conn_id='postgres_default',
-        sql="""
-        CREATE TABLE IF NOT EXISTS reviews (
-            id SERIAL PRIMARY KEY,
-            movie VARCHAR(100),
-            rating INT,
-            review_text TEXT,
-            review_time TIMESTAMP
-        );
-        """
+        sql='create_reviews_table.sql'
     )
 
     ingest = PythonOperator(
@@ -74,12 +70,7 @@ with DAG(
     aggregate = SQLExecuteQueryOperator(
         task_id='daily_aggregates',
         conn_id='postgres_default',
-        sql="""
-        CREATE TABLE IF NOT EXISTS daily_stats AS
-        SELECT movie, AVG(rating) as avg_rating, COUNT(*) as review_count
-        FROM reviews
-        GROUP BY movie;
-        """
+        sql='daily_aggregates.sql'
     )
 
     create_table >> ingest >> aggregate
